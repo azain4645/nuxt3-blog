@@ -1,6 +1,6 @@
 <script>
   export default {
-    layout: "blog"
+    layout: 'blog'
   }
 </script>
 

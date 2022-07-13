@@ -1,7 +1,10 @@
 <script>
-  export default {
-    layout: "blog"
-  }
+  // export default {
+  //   layout: 'blog'
+  // }
+  definePageMeta({
+    layout: 'blog'
+  });
 </script>
 
 <script setup>
