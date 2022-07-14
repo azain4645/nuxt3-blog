@@ -1,17 +1,9 @@
-<script lang="ts">
-  export default {
-    data(){
-      return {
-        lucky : ""
-      }
-    },
-    metdhos: {
-      fortuneTest() {
-        //ランダムで結果を出す
-      },
-    },
-    computed: {
-    },
+<script setup lang="ts">
+  const lucky = ref('')
+  const results = ['大吉', '吉', '大凶'];
+  const fortuneTest = () => {
+    const random = Math.floor( Math.random() * 3)
+    lucky.value = results[random]
   }
 </script>
 
