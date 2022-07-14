@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <div class="p-4 md:w-1/2 lg:w-1/3">
+  <div class="p-4">
     <p class="p-2 font-bold bg-blue-400 text-white">
       Quote of the Day
     </p>
