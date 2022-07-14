@@ -1,24 +1,37 @@
 <script setup lang="ts">
-  interface Todo {
+
+  type Todo = {
     content: string;
     created: string;
     state: boolean;
   }
  
-  let todos = reactive<Todo[]>([
-        {content: 'テスト', created: '2020-04-30 17:00', state: false}, 
-        {content: 'コーディング', created: '2020-04-30 16:00', state: false},
-        {content: '環境構築', created: '2020-04-30 15:30', state: true}
+  const todos = ref<Todo[]>([
+         {content: 'テスト', created: '2020-04-30 17:00', state: true}, 
+         {content: 'コーディング', created: '2020-04-30 16:00', state: true},
+         {content: '環境構築', created: '2020-04-30 15:30', state: true}
       ])
 
   let content = ref('')
 
   const addTodo = () => {
-    todos.push({
-      content: "追加テスト",
-      created: "2020-04-30 12:30",
-      state: false
-    })
+    if(content.value != ''){
+      todos.value.push({
+        content: content.value,
+        created: nowTime(),
+        state: false
+      })
+      content.value = "";
+    }
+  }
+
+  const nowTime = () : string => {
+    let d = new Date()
+    return d.getFullYear()
+            + '-' + ('00' + (d.getMonth() + 1)).slice(-2)
+            + '-' + ('00' + d.getDate()).slice(-2)
+            + ' ' + ('00' + d.getHours()).slice(-2)
+            + ':' + ('00' + d.getMinutes()).slice(-2);
   }
 </script>
 
