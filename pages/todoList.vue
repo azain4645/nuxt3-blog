@@ -6,13 +6,39 @@
     state: boolean;
   }
  
+  const content = ref('')
+
   const todos = ref<Todo[]>([
          {content: 'テスト', created: '2020-04-30 17:00', state: true}, 
-         {content: 'コーディング', created: '2020-04-30 16:00', state: true},
-         {content: '環境構築', created: '2020-04-30 15:30', state: true}
+         {content: 'コーディング', created: '2020-04-30 16:00', state: false},
+         {content: '環境構築', created: '2020-04-30 15:30', state: false}
       ])
 
-  let content = ref('')
+  const filterdTodos = ref<Todo[]>()
+
+  const filterBtn = ref(0)
+
+  // computedボタンが変わった時にtodoをフィルター
+  const fileter = () => {
+    if(filterBtn.value == 0){
+      todos.value.forEach(todo => {
+        filterdTodos.value.push(todo)
+      });
+    }else if(filterBtn.value == 1){
+      todos.value.forEach(todo => {
+        if(todo.state == false){
+          filterdTodos.value.push(todo)
+        }
+      });
+    }else{
+      todos.value.forEach(todo => {
+        if(todo.state == true){
+          filterdTodos.value.push(todo)
+        }
+      });
+    }
+
+  }
 
   const addTodo = () => {
     if(content.value != ''){
@@ -34,6 +60,9 @@
             + ':' + ('00' + d.getMinutes()).slice(-2);
   }
 
+  const dropItem = (index : number) => {
+    todos.value.splice(index, 1)
+  }
 </script>
 
 <template>
@@ -45,10 +74,9 @@
     </div>
 
     <div class="Filter mb-5">
-      <button class="ml-5 w-32 h-8 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">全て</button>
-      <button class="ml-5 w-32 h-8 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">作業前</button>
-      <button class="ml-5 w-32 h-8 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">作業中</button>
-      <button class="ml-5 w-32 h-8 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">完了</button>
+      <button @click="filterBtn = 0" class="ml-5 w-32 h-8 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">全て</button>
+      <button @click="filterBtn = 1" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施前</button>
+      <button @click="filterBtn = 2" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施後</button>
     </div>
     
 		<table class="w-full flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
@@ -64,8 +92,11 @@
 				<tr v-for="(item,index) in todos" :key="index" class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0">
 					<td class="border-grey-light border hover:bg-gray-100 p-3">{{ item.content }}</td>
 					<td class="border-grey-light border hover:bg-gray-100 p-3 truncate">{{ item.created }}</td>
-					<td class="border-grey-light border hover:bg-gray-100 p-3 truncate">{{ item.state }}</td>
-					<td class="border-grey-light border hover:bg-gray-100 p-3 text-red-400 hover:text-red-600 hover:font-medium cursor-pointer">削除</td>
+					<td class="border-grey-light border hover:bg-gray-100 p-3 truncate">
+            <p v-if="item.state">実施後</p>
+            <p v-else>実施前</p>
+          </td>
+					<td @click="dropItem(index)" class="border-grey-light border hover:bg-gray-100 p-3 text-red-400 hover:text-red-600 hover:font-medium cursor-pointer">削除</td>
 				</tr>
 			</tbody>
 		</table>
