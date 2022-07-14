@@ -18,14 +18,14 @@
     if(content.value != ''){
       todos.value.push({
         content: content.value,
-        created: nowTime(),
+        created: formatedNow(),
         state: false
       })
       content.value = "";
     }
   }
 
-  const nowTime = () : string => {
+  const formatedNow = () : string => {
     let d = new Date()
     return d.getFullYear()
             + '-' + ('00' + (d.getMonth() + 1)).slice(-2)
@@ -33,6 +33,7 @@
             + ' ' + ('00' + d.getHours()).slice(-2)
             + ':' + ('00' + d.getMinutes()).slice(-2);
   }
+
 </script>
 
 <template>
