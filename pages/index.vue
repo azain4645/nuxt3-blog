@@ -1,8 +1,9 @@
-<script>
-  export default {
+<!-- 明示的にレイアウトを指定する場合 -->
+<!-- <script>
+  definePageMeta({
     layout: 'blog'
-  }
-</script>
+  });
+</script> -->
 
 <script setup>
   const { data: posts } = await useFetch('https://jsonplaceholder.typicode.com/posts')

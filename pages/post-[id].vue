@@ -1,9 +1,3 @@
-<script>
-  export default {
-    layout: "blog"
-  }
-</script>
-
 <script setup>
   const route = useRoute()
   const { data: post } = await useFetch(`https://jsonplaceholder.typicode.com/posts/${route.params.id}`, { pick: ['title', 'body'] })

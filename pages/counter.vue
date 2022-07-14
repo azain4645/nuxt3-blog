@@ -1,12 +1,3 @@
-<script>
-  // export default {
-  //   layout: 'blog'
-  // }
-  definePageMeta({
-    layout: 'blog'
-  });
-</script>
-
 <script setup>
   const { counter, increment, decrement, counterDouble} = useCounter()
 </script>
