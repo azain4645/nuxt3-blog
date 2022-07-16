@@ -53,9 +53,9 @@
     </div>
 
     <div class="Filter mb-5">
-      <button @click="mode = 'all'" class="ml-5 w-32 h-8 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">全て</button>
-      <button @click="mode = 'notYet'" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施前</button>
-      <button @click="mode = 'done'" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施後</button>
+      <button @click="mode = 'all'" v-bind:class="{'bg-gray-700' : mode === 'all', 'bg-gray-400' : mode !== 'all'}" class="ml-5 w-32 h-8 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">全て</button>
+      <button @click="mode = 'notYet'" v-bind:class="{'bg-gray-700' : mode === 'notYet', 'bg-gray-400' : mode !== 'notYet'}" class="ml-5 w-32 h-8  text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施前</button>
+      <button @click="mode = 'done'" v-bind:class="{'bg-gray-700' : mode === 'done', 'bg-gray-400' : mode !== 'done'}" class="ml-5 w-32 h-8 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施後</button>
     </div>
     
 		<table class="w-full flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
