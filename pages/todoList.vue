@@ -3,56 +3,37 @@
   type Todo = {
     content: string;
     created: string;
-    state: boolean;
+    isDone: boolean;
   }
  
   const content = ref('')
 
   const todos = ref<Todo[]>([
-         {content: 'テスト', created: '2020-04-30 17:00', state: true}, 
-         {content: 'コーディング', created: '2020-04-30 16:00', state: false},
-         {content: '環境構築', created: '2020-04-30 15:30', state: false}
+         {content: 'テスト', created: '2020-04-30 17:00', isDone: true}, 
+         {content: 'コーディング', created: '2020-04-30 16:00', isDone: false},
+         {content: '環境構築', created: '2020-04-30 15:30', isDone: false}
       ])
 
-  const filterdTodos = ref<Todo[]>()
+  // TODOリスト表示モード
+  const mode = ref<'all' | 'notYet' | 'done' >('all');
 
-  const filterBtn = ref(0)
+  const dispayTodos = computed(() =>
+    mode.value === 'all' ? todos.value
+    : mode.value === 'notYet' ? todos.value.filter(todo => !todo.isDone)
+    : todos.value.filter(todo => todo.isDone)
+  )
 
-  // computedボタンが変わった時にtodoをフィルター
-  const fileter = () => {
-    if(filterBtn.value == 0){
-      todos.value.forEach(todo => {
-        filterdTodos.value.push(todo)
-      });
-    }else if(filterBtn.value == 1){
-      todos.value.forEach(todo => {
-        if(todo.state == false){
-          filterdTodos.value.push(todo)
-        }
-      });
-    }else{
-      todos.value.forEach(todo => {
-        if(todo.state == true){
-          filterdTodos.value.push(todo)
-        }
-      });
-    }
-
-  }
-
-  const addTodo = () => {
-    if(content.value != ''){
+  const addTodo = () => content.value && (() => {
       todos.value.push({
         content: content.value,
         created: formatedNow(),
-        state: false
+        isDone: false
       })
       content.value = "";
-    }
-  }
+  }) ()
 
   const formatedNow = () : string => {
-    let d = new Date()
+    const d = new Date()
     return d.getFullYear()
             + '-' + ('00' + (d.getMonth() + 1)).slice(-2)
             + '-' + ('00' + d.getDate()).slice(-2)
@@ -60,9 +41,7 @@
             + ':' + ('00' + d.getMinutes()).slice(-2);
   }
 
-  const dropItem = (index : number) => {
-    todos.value.splice(index, 1)
-  }
+  const dropItem = (index : number) => todos.value.splice(index, 1)
 </script>
 
 <template>
@@ -74,9 +53,9 @@
     </div>
 
     <div class="Filter mb-5">
-      <button @click="filterBtn = 0" class="ml-5 w-32 h-8 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">全て</button>
-      <button @click="filterBtn = 1" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施前</button>
-      <button @click="filterBtn = 2" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施後</button>
+      <button @click="mode = 'all'" class="ml-5 w-32 h-8 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">全て</button>
+      <button @click="mode = 'notYet'" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施前</button>
+      <button @click="mode = 'done'" class="ml-5 w-32 h-8 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700">実施後</button>
     </div>
     
 		<table class="w-full flex-row flex-no-wrap sm:bg-white rounded-lg overflow-hidden sm:shadow-lg my-5">
@@ -89,12 +68,11 @@
 				</tr>
 			</thead>
 			<tbody class="flex-1 sm:flex-none">
-				<tr v-for="(item,index) in todos" :key="index" class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0">
+				<tr v-for="(item,index) in dispayTodos" :key="index" class="flex flex-col flex-no wrap sm:table-row mb-2 sm:mb-0">
 					<td class="border-grey-light border hover:bg-gray-100 p-3">{{ item.content }}</td>
 					<td class="border-grey-light border hover:bg-gray-100 p-3 truncate">{{ item.created }}</td>
 					<td class="border-grey-light border hover:bg-gray-100 p-3 truncate">
-            <p v-if="item.state">実施後</p>
-            <p v-else>実施前</p>
+            {{ item.isDone ? '実施後' : '実施前' }}
           </td>
 					<td @click="dropItem(index)" class="border-grey-light border hover:bg-gray-100 p-3 text-red-400 hover:text-red-600 hover:font-medium cursor-pointer">削除</td>
 				</tr>
