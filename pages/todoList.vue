@@ -46,14 +46,14 @@ import * as yup from 'yup';
 
   const dropItem = (index : number) => todos.value.splice(index, 1)
 
-  const { value: content, errorMessage: contentError, handleChange, meta } = useField<string>('content', yup.string().required().min(3))
+  const { value: content, errorMessage: contentError, meta } = useField<string>('content', yup.string().required())
 </script>
 
 <template>
   <div class="m-2">
     <h1 class="text-2xl mb-5">Todoリスト</h1>
     <div class="flex flex-wrap">
-      <input :value="content" @change="handleChange" type="text" class="w-2/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="タスクを入力してください">
+      <input v-model="content" type="text" class="w-2/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="タスクを入力してください">
       <button 
         @click="addTodo" 
         :disabled="!meta.valid"
@@ -66,9 +66,6 @@ import * as yup from 'yup';
       </button>
     </div>
     <p class="mb-5"> {{ contentError }}</p>
-    <p>valid:{{ meta.valid }}</p>
-    <p>dirty:{{ meta.dirty }}</p>
-    <p>initialValue:{{ meta.initialValue }}</p>
 
     <div class="Filter mb-5">
       <button 
