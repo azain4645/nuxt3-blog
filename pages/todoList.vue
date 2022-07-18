@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { valueToNode } from '@babel/types';
-  import { useField } from 'vee-validate'
+  import { useField, useForm } from 'vee-validate'
   import * as yup from 'yup';
 
   type Todo = {
@@ -26,15 +26,6 @@
     : todos.value.filter(todo => todo.isDone)
   )
 
-  const addTodo = () => {
-      todos.value.push({
-        content: content.value,
-        created: formatedNow(),
-        isDone: false
-      })
-      resetField();
-  }
-
   const formatedNow = () : string => {
     const d = new Date()
     return d.getFullYear()
@@ -46,16 +37,39 @@
 
   const dropItem = (index : number) => todos.value.splice(index, 1)
 
-  const { value: content, errorMessage: contentError, meta, resetField} = useField<string>('content', yup.string().required().min(3))
+  const { validate, resetForm } = useForm({
+    validationSchema: yup.object({
+      content: yup.string().required('このフォームは必須項目です').min(3, '３文字以上である必要があります')
+    }),
+  })
+
+  const addTodo = async () => {
+    const { valid } = await validate()
+    if (!valid) return;
+    todos.value.push({
+      content: content.value,
+      created: formatedNow(),
+      isDone: false
+    })
+    resetForm();
+  }
+
+  const { value: content, errorMessage: contentError, meta, resetField} = useField<string>('content')
 </script>
 å
 <template>
   <div class="m-2">
     <h1 class="text-2xl mb-5">Todoリスト</h1>
-    <div class="flex flex-wrap">
-      <input v-model="content" type="text" class="w-2/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="タスクを入力してください">
+    <form
+      @submit.prevent="addTodo"
+      class="flex flex-wrap">
+      <input 
+        @change ='validate()'
+        v-model="content" 
+        type="text" 
+        class="w-2/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+        placeholder="タスクを入力してください">
       <button 
-        @click="addTodo" 
         :disabled="!meta.valid || !meta.valid"
         :class="`${
           meta.validated && meta.valid
@@ -64,7 +78,7 @@
         } ml-5 w-32  text-white font-semibold rounded-lg shadow-md`">
           追加
       </button>
-    </div>
+    </form>
     <p class="mb-5"> {{ contentError }}</p>
 
     <!-- <p class="mb-5"> dirty {{ meta.dirty }}</p>
