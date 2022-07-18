@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { valueToNode } from '@babel/types';
-import { useField } from 'vee-validate'
-import * as yup from 'yup';
+  import { valueToNode } from '@babel/types';
+  import { useField } from 'vee-validate'
+  import * as yup from 'yup';
 
   type Todo = {
     content: string;
     created: string;
     isDone: boolean;
   }
- 
+
   // const content = ref('')
 
   const todos = ref<Todo[]>([
@@ -32,7 +32,7 @@ import * as yup from 'yup';
         created: formatedNow(),
         isDone: false
       })
-      content.value = "";
+      resetField();
   }
 
   const formatedNow = () : string => {
@@ -46,9 +46,9 @@ import * as yup from 'yup';
 
   const dropItem = (index : number) => todos.value.splice(index, 1)
 
-  const { value: content, errorMessage: contentError, meta } = useField<string>('content', yup.string().required())
+  const { value: content, errorMessage: contentError, meta, resetField} = useField<string>('content', yup.string().required().min(3))
 </script>
-
+å
 <template>
   <div class="m-2">
     <h1 class="text-2xl mb-5">Todoリスト</h1>
@@ -56,9 +56,9 @@ import * as yup from 'yup';
       <input v-model="content" type="text" class="w-2/3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="タスクを入力してください">
       <button 
         @click="addTodo" 
-        :disabled="!meta.valid"
+        :disabled="!meta.valid || !meta.valid"
         :class="`${
-          meta.valid === true 
+          meta.validated && meta.valid
           ? 'bg-blue-500 hover:bg-blue-700'
           : 'bg-blue-300'
         } ml-5 w-32  text-white font-semibold rounded-lg shadow-md`">
@@ -66,6 +66,10 @@ import * as yup from 'yup';
       </button>
     </div>
     <p class="mb-5"> {{ contentError }}</p>
+
+    <!-- <p class="mb-5"> dirty {{ meta.dirty }}</p>
+    <p class="mb-5"> vaild {{ meta.valid }}</p>
+    <p class="mb-5"> validated {{ meta.validated }}</p> -->
 
     <div class="Filter mb-5">
       <button 
